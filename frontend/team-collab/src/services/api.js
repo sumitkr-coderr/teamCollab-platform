@@ -1,9 +1,10 @@
 import axios from "axios";
-import { toast } from "react-toastify"; // added for toast messages
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+// 🌍 Base URL from environment
 const API = axios.create({
-  baseURL: "http://localhost:5001/api",
+  baseURL: import.meta.env.VITE_API_URL,
   withCredentials: true,
 });
 
@@ -21,13 +22,12 @@ API.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// 📣 Global response interceptor for success/error toasts
+// 📣 Global response interceptor
 API.interceptors.response.use(
   (response) => {
-    // only notify for mutating methods
     const method = response.config.method?.toLowerCase();
+
     if (method && ["post", "put", "patch", "delete"].includes(method)) {
-      // allow callers to supply a custom message via config.toastMessage
       const msg = response.config.toastMessage || "Operation successful";
       toast.success(msg);
     }
@@ -37,7 +37,15 @@ API.interceptors.response.use(
   (error) => {
     const message =
       error.response?.data?.message || error.message || "Something went wrong";
+
     toast.error(message);
+
+    // 🔥 Optional: handle unauthorized globally
+    if (error.response?.status === 401) {
+      localStorage.removeItem("token");
+      // window.location.href = "/login"; // optional redirect
+    }
+
     return Promise.reject(error);
   }
 );

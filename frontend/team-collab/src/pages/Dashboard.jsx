@@ -240,7 +240,6 @@ const Dashboard = () => {
           icon="👥"
           color="indigo"
           trend={overview?.teamTrend}
-          onClick={() => navigate('/teams')}
         />
         
         <StatCard
@@ -249,7 +248,6 @@ const Dashboard = () => {
           icon="📊"
           color="purple"
           trend={overview?.projectTrend}
-          onClick={() => navigate('/projects')}
         />
         
         <StatCard
@@ -258,7 +256,6 @@ const Dashboard = () => {
           icon="📋"
           color="blue"
           trend={overview?.taskTrend}
-          onClick={() => navigate('/tasks')}
         />
         
         <StatCard
@@ -267,7 +264,6 @@ const Dashboard = () => {
           icon="⏳"
           color="red"
           trend={overview?.pendingTrend}
-          onClick={() => navigate('/tasks?status=pending')}
         />
       </div>
 
