@@ -2,9 +2,14 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// 🌍 Base URL from environment
+// 🌍 Detect environment automatically
+const BASE_URL =
+  window.location.hostname === "localhost"
+    ? "http://localhost:5001/api"
+    : "https://your-backend.onrender.com/api";
+
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: BASE_URL,
   withCredentials: true,
 });
 
@@ -40,10 +45,8 @@ API.interceptors.response.use(
 
     toast.error(message);
 
-    // 🔥 Optional: handle unauthorized globally
     if (error.response?.status === 401) {
       localStorage.removeItem("token");
-      // window.location.href = "/login"; // optional redirect
     }
 
     return Promise.reject(error);
