@@ -14,7 +14,8 @@ import TeamMembers from "./pages/TeamMembers";
 import HelpCenter from "./pages/HelpCenter";
 import Documentation from "./pages/Documentation";
 import Footer from "./layout/Footer";
-
+import ForgotPassword from "./pages/ForgetPasword";
+import ResetPassword from "./pages/ResetPassword";  
 // toasts
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -43,6 +44,8 @@ function App() {
               <Footer />
             </div>
           } />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+<Route path="/reset-password/:token" element={<ResetPassword />} />
 
           {/* Public info pages (optional) */}
           <Route path="/about" element={

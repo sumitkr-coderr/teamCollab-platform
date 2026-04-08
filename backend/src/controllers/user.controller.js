@@ -2,6 +2,7 @@ import db from "../models/index.js";
 import fs from "fs";
 import path from "path";
 import { broadcast } from "../utils/socketNotifier.js";
+import bcrypt from "bcrypt";
 
 const { User } = db;
 
@@ -138,3 +139,89 @@ export const findAllUsers = async (req, res) => {
   }
 };
 
+import crypto from "crypto";
+
+export const forgetPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ where: { email } });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // 🔐 Generate token
+    const resetToken = crypto.randomBytes(32).toString("hex");
+
+    // ⏳ Expiry (15 minutes)
+    const resetTokenExpiry = new Date(Date.now() + 15 * 60 * 1000);
+
+    // 💾 Save to DB
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpiry = resetTokenExpiry;
+
+    await user.save();
+
+    // 🔗 Create reset URL
+    const resetURL = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+
+    // 📢 Broadcast activity
+    await broadcast("activity", {
+      userId: user.id,
+      message: `${user.name || user.id} requested a password reset`,
+      persist: true,
+    });
+
+    // 📧 (Simulated email)
+    console.log("Reset Link:", resetURL);
+
+    res.status(200).json({
+      success: true,
+      message: "Password reset link sent to email",
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const resetPassword = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { newPassword } = req.body;
+      const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() },
+    });
+      if (!user)
+      return res.status(400).json({ message: "Invalid or expired token" });
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+      user.password = hashedPassword;
+    user.resetPasswordToken = null;
+    user.resetPasswordExpires = null; 
+    await user.save();
+      await broadcast("activity", {
+      userId: user.id,
+      message: `${user.name || user.id} reset their password`,
+      persist: true,
+    });
+      res.status(200).json({
+      success: true,
+      message: "Password reset successful",
+    });
+  }
+
+    catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
