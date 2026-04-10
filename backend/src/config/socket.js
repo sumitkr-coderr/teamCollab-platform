@@ -13,7 +13,7 @@ const emitOnlineUsers = () => {
 export const initSocket = (httpServer) => {
   io = new Server(httpServer, {
     cors: {
-      origin: ["http://localhost:5173", "https://your-frontend.vercel.app"],
+      origin: ["http://localhost:5173", "https://your-frontend.vercel.app","https://team-collab-platform-one.vercel.app"],
       methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
       credentials: true,
     },

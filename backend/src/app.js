@@ -23,7 +23,7 @@ app.use(helmet({
 app.use(cors({
   origin: [
     "http://localhost:5173",
-    "https://your-frontend.vercel.app"
+    "https://team-collab-platform-one.vercel.app"
   ],
   methods: ["GET", "POST", "PUT", "DELETE","PATCH"],
   credentials: true,
