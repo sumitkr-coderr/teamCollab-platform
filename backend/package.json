@@ -1,11 +1,8 @@
 {
   "type": "module",
    "scripts": {
-    "start": "node src/server.js",
-     "name": "root",
-  "private": true
-},
-
+    "start": "node src/server.js"
+  },
   "dependencies": {
     "bcrypt": "^6.0.0",
     "compression": "^1.8.1",
