@@ -6,7 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 const BASE_URL =
   window.location.hostname === "localhost"
     ? "http://localhost:5001/api"
-    : "https://your-backend.onrender.com/api";
+    : "https://teamcollab-backend.onrender.com/api";
 
 const API = axios.create({
   baseURL: BASE_URL,
