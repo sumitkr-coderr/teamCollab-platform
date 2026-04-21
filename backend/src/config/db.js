@@ -1,22 +1,14 @@
 import { Sequelize } from "sequelize";
 
-// export const sequelize = new Sequelize(
-//   process.env.DB_NAME,
-//   process.env.DB_USER,
-//   process.env.DB_PASSWORD,
-//   {
-//     host: process.env.DB_HOST,
-//     dialect: "mysql",
-//     logging: false, // disable SQL logs (enable in dev if needed)
-//   }
-// );
+const isRailway = !!process.env.MYSQLHOST;
 
 export const sequelize = new Sequelize(
-  process.env.DB_NAME || "team_collaboration_db",
-  process.env.DB_USER || "root",
-  process.env.DB_PASSWORD || "",
+  isRailway ? process.env.MYSQLDATABASE : process.env.DB_NAME,
+  isRailway ? process.env.MYSQLUSER : process.env.DB_USER,
+  isRailway ? process.env.MYSQLPASSWORD : process.env.DB_PASSWORD,
   {
-    host: process.env.DB_HOST || "localhost",
+    host: isRailway ? process.env.MYSQLHOST : process.env.DB_HOST,
+    port: isRailway ? process.env.MYSQLPORT : undefined,
     dialect: "mysql",
     logging: false,
   }
